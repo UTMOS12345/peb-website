@@ -1,0 +1,492 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Dashboard — PEB Admin</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Manrope:wght@300;400;500;600;700;800&display=swap"
+            rel="stylesheet"
+        />
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static', filename='css/styles.css') }}"
+        />
+    </head>
+    <body style="background: var(--bg-tint)">
+        <header class="navbar" id="navbar">
+            <div class="nav-inner">
+                <a href="/" class="brand" aria-label="PEB Union home">
+                    <img
+                        src="/static/img/logo.png"
+                        alt="PEB Union"
+                        style="height: 38px; width: auto"
+                    />
+                </a>
+                <div style="display: flex; gap: 10px; align-items: center">
+                    <span
+                        style="
+                            font-size: 12px;
+                            letter-spacing: 0.12em;
+                            text-transform: uppercase;
+                            color: var(--muted);
+                            font-weight: 600;
+                        "
+                    >
+                        {{ current_user.username }}
+                    </span>
+                    <a
+                        href="/"
+                        class="btn btn--ghost"
+                        style="padding: 8px 16px; font-size: 13px"
+                        >View Site</a
+                    >
+                    <a
+                        href="/logout"
+                        class="btn btn--ghost"
+                        style="
+                            padding: 8px 16px;
+                            font-size: 13px;
+                            border-color: rgba(239, 68, 68, 0.3);
+                            color: #dc2626;
+                        "
+                        >Logout</a
+                    >
+                </div>
+            </div>
+        </header>
+
+        <div
+            class="container"
+            style="padding-top: 48px; padding-bottom: 96px; max-width: 1100px"
+        >
+            {% with messages = get_flashed_messages() %} {% if messages %}
+            <div
+                style="
+                    background: #dcfce7;
+                    border: 1px solid #86efac;
+                    color: #166534;
+                    padding: 12px 18px;
+                    border-radius: var(--r-sm);
+                    margin-bottom: 24px;
+                    font-size: 14px;
+                "
+            >
+                {% for msg in messages %}{{ msg }}{% endfor %}
+            </div>
+            {% endif %} {% endwith %}
+
+            <!-- VIEW A: RESEARCHER -->
+            {% if current_user.role == 'researcher' %}
+
+            <div
+                style="
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 40px;
+                "
+            >
+                <div>
+                    <span class="eyebrow">Researcher Portal</span>
+                    <h1
+                        style="
+                            font-size: clamp(28px, 3.5vw, 42px);
+                            font-weight: 400;
+                            margin-bottom: 6px;
+                        "
+                    >
+                        My Workspace
+                    </h1>
+                    <p style="color: var(--muted); margin: 0">
+                        Create drafts and submit them for editorial review.
+                    </p>
+                </div>
+                <a href="/admin/add" class="btn">+ Create Draft</a>
+            </div>
+
+            <div class="manage-card">
+                <div class="manage-card-header">
+                    <h3 class="manage-card-title">My Submissions</h3>
+                </div>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Category</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for post in posts %}
+                        <tr>
+                            <td style="font-weight: 500; max-width: 320px">
+                                {{ post.title }}
+                            </td>
+                            <td style="text-transform: capitalize">
+                                {{ post.category }}
+                            </td>
+                            <td style="color: var(--muted); font-size: 13px">
+                                {{ post.date }}
+                            </td>
+                            <td>
+                                <span
+                                    class="status-pill status-pill--{{ post.status | default('draft') }}"
+                                    >{{ (post.status | default('draft')) |
+                                    capitalize }}</span
+                                >
+                            </td>
+                            <td class="action-links">
+                                {% if post.status == 'draft' or post.status is
+                                not defined %}
+                                <a
+                                    href="{{ url_for('edit_news', id=post.id) }}"
+                                    style="color: var(--blue)"
+                                    >Edit</a
+                                >
+                                <a
+                                    href="{{ url_for('delete_news', id=post.id) }}"
+                                    style="color: #dc2626"
+                                    onclick="
+                                        return confirm('Delete this draft?');
+                                    "
+                                    >Delete</a
+                                >
+                                {% else %}
+                                <span
+                                    style="color: var(--muted); font-size: 13px"
+                                    >Locked for review</span
+                                >
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td
+                                colspan="5"
+                                style="
+                                    text-align: center;
+                                    padding: 40px;
+                                    color: var(--muted);
+                                "
+                            >
+                                No submissions yet.
+                                <a href="/admin/add" style="color: var(--blue)"
+                                    >Create your first draft →</a
+                                >
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- VIEW B: RESEARCH MANAGER -->
+            {% elif current_user.role == 'manager' %}
+
+            <div
+                style="
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 40px;
+                "
+            >
+                <div>
+                    <span class="eyebrow">Research Manager</span>
+                    <h1
+                        style="
+                            font-size: clamp(28px, 3.5vw, 42px);
+                            font-weight: 400;
+                            margin-bottom: 6px;
+                        "
+                    >
+                        Review Queue
+                    </h1>
+                    <p style="color: var(--muted); margin: 0">
+                        Review pending submissions, refine the Markdown, and
+                        commit to publish.
+                    </p>
+                </div>
+            </div>
+
+            <div class="manage-card" style="margin-bottom: 32px">
+                <div class="manage-card-header">
+                    <h3 class="manage-card-title">Pending Review</h3>
+                </div>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Category</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% set has_pending = [] %} {% for post in posts %} {% if
+                        post.status == 'pending' %} {% set _ =
+                        has_pending.append(1) %}
+                        <tr>
+                            <td style="font-weight: 500; max-width: 300px">
+                                {{ post.title }}
+                            </td>
+                            <td style="text-transform: capitalize">
+                                {{ post.category }}
+                            </td>
+                            <td style="color: var(--muted); font-size: 13px">
+                                {{ post.date }}
+                            </td>
+                            <td>
+                                <span class="status-pill status-pill--pending"
+                                    >Pending</span
+                                >
+                            </td>
+                            <td
+                                class="action-links"
+                                style="
+                                    display: flex;
+                                    gap: 8px;
+                                    align-items: center;
+                                "
+                            >
+                                <a
+                                    href="{{ url_for('edit_news', id=post.id) }}"
+                                    style="
+                                        color: var(--blue);
+                                        font-weight: 600;
+                                        font-size: 13px;
+                                    "
+                                    >Open &amp; Edit</a
+                                >
+                                <a
+                                    href="#"
+                                    class="btn"
+                                    style="
+                                        padding: 5px 12px;
+                                        font-size: 11px;
+                                        background: #16a34a;
+                                        border-color: #16a34a;
+                                    "
+                                    onclick="
+                                        return confirm(
+                                            'Commit and publish this post?',
+                                        );
+                                    "
+                                    >&#10003; Commit</a
+                                >
+                            </td>
+                        </tr>
+                        {% endif %} {% endfor %} {% if has_pending | length == 0
+                        %}
+                        <tr>
+                            <td
+                                colspan="5"
+                                style="
+                                    text-align: center;
+                                    padding: 48px;
+                                    color: var(--muted);
+                                "
+                            >
+                                &#10003; Queue is clear. No submissions pending
+                                review.
+                            </td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="manage-card">
+                <div class="manage-card-header">
+                    <h3 class="manage-card-title">All Posts</h3>
+                </div>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Category</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for post in posts %}
+                        <tr>
+                            <td style="font-weight: 500">{{ post.title }}</td>
+                            <td style="text-transform: capitalize">
+                                {{ post.category }}
+                            </td>
+                            <td style="color: var(--muted); font-size: 13px">
+                                {{ post.date }}
+                            </td>
+                            <td>
+                                <span
+                                    class="status-pill status-pill--{{ post.status | default('draft') }}"
+                                    >{{ (post.status | default('draft')) |
+                                    capitalize }}</span
+                                >
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td
+                                colspan="4"
+                                style="
+                                    text-align: center;
+                                    padding: 40px;
+                                    color: var(--muted);
+                                "
+                            >
+                                No posts yet.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- VIEW C: ADMIN -->
+            {% else %}
+
+            <div
+                style="
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 40px;
+                "
+            >
+                <div>
+                    <span class="eyebrow">Admin Console</span>
+                    <h1
+                        style="
+                            font-size: clamp(28px, 3.5vw, 42px);
+                            font-weight: 400;
+                            margin-bottom: 6px;
+                        "
+                    >
+                        Global Dashboard
+                    </h1>
+                    <p style="color: var(--muted); margin: 0">
+                        Full system access. Handle with care.
+                    </p>
+                </div>
+                <a href="/admin/add" class="btn">+ New Post</a>
+                <div style="margin-bottom: 20px">
+                    <a
+                        href="/admin/staff/add"
+                        class="btn"
+                        style="background: var(--navy)"
+                        >+ Add New Student Member</a
+                    >
+                </div>
+            </div>
+
+            <div class="manage-card" style="margin-bottom: 32px">
+                <div class="manage-card-header">
+                    <h3 class="manage-card-title">Global Feed</h3>
+                    <span style="font-size: 13px; color: var(--muted)"
+                        >{{ posts | length }} total posts</span
+                    >
+                </div>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Category</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for post in posts %}
+                        <tr>
+                            <td style="font-weight: 500; max-width: 280px">
+                                {{ post.title }}
+                            </td>
+                            <td style="text-transform: capitalize">
+                                {{ post.category }}
+                            </td>
+                            <td style="color: var(--muted); font-size: 13px">
+                                {{ post.date }}
+                            </td>
+                            <td>
+                                <span
+                                    class="status-pill status-pill--{{ post.status | default('published') }}"
+                                    >{{ (post.status | default('published')) |
+                                    capitalize }}</span
+                                >
+                            </td>
+                            <td
+                                class="action-links"
+                                style="
+                                    display: flex;
+                                    gap: 8px;
+                                    align-items: center;
+                                    flex-wrap: wrap;
+                                "
+                            >
+                                <a
+                                    href="{{ url_for('edit_news', id=post.id) }}"
+                                    style="
+                                        color: var(--blue);
+                                        font-size: 13px;
+                                        font-weight: 600;
+                                    "
+                                    >Edit</a
+                                >
+                                <a
+                                    href="{{ url_for('delete_news', id=post.id) }}"
+                                    class="btn"
+                                    style="
+                                        padding: 4px 10px;
+                                        font-size: 11px;
+                                        background: #dc2626;
+                                        border-color: #dc2626;
+                                    "
+                                    onclick="
+                                        return confirm(
+                                            'Permanently delete this post?',
+                                        );
+                                    "
+                                    >Redact</a
+                                >
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td
+                                colspan="5"
+                                style="
+                                    text-align: center;
+                                    padding: 40px;
+                                    color: var(--muted);
+                                "
+                            >
+                                No posts in the system yet.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            {% endif %}
+
+            <p style="margin-top: 24px">
+                <a href="/" style="color: var(--blue); font-size: 14px"
+                    >← Back to Site</a
+                >
+            </p>
+        </div>
+
+        <script src="{{ url_for('static', filename='js/layout.js') }}"></script>
+    </body>
+</html>

@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+<head>
+    <title>Edit Post — PEB Admin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body style="background: var(--bg-tint);">
+    <div class="container" style="padding: 60px 20px;">
+        <div class="admin-card">
+            <h2>Edit Post</h2>
+            <form method="POST">
+                <div class="form-row">
+                    <label>Title</label>
+                    <input type="text" name="title" value="{{ post.title }}" required>
+                </div>
+
+                <div class="form-row split">
+                    <div>
+                        <label>Category</label>
+                        <select name="category">
+                            <!-- Cleaned up the 'selected' logic to prevent Jinja errors -->
+                            <option value="politics" {{ 'selected' if post.category == 'politics' else '' }}>Politics</option>
+                            <option value="economics" {{ 'selected' if post.category == 'economics' else '' }}>Economics</option>
+                            <option value="business" {{ 'selected' if post.category == 'business' else '' }}>Business</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>YouTube Embed Link</label>
+                        <input type="text" name="video_url" value="{{ post.video_url }}">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <label>Summary</label>
+                    <textarea name="summary" required>{{ post.summary }}</textarea>
+                </div>
+
+                <div class="form-row">
+                    <label>Full Content</label>
+                    <textarea name="content" style="min-height: 250px;" required>{{ post.content }}</textarea>
+                </div>
+
+                <div class="form-row">
+                    <label>Image URL</label>
+                    <input type="text" name="image_url" value="{{ post.image_url }}">
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button type="submit" class="btn">Save Changes</button>
+                    <a href="/admin/manage" class="btn btn--ghost">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,562 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Add News — PEB Union Admin</title>
+        <meta
+            name="description"
+            content="Admin panel for publishing news to the PEB Union newsroom."
+        />
+
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Manrope:wght@300;400;500;600;700;800&display=swap"
+            rel="stylesheet"
+        />
+
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static', filename='css/styles.css') }}"
+        />
+
+        <style>
+            /* ── Admin-specific layout ── */
+            .admin-page {
+                background: var(--bg-tint);
+                min-height: 100vh;
+                padding-top: var(--nav-h);
+            }
+            .admin-inner {
+                max-width: 820px;
+                margin: 0 auto;
+                padding: 56px 24px 80px;
+            }
+            .admin-header {
+                margin-bottom: 40px;
+            }
+            .admin-header .eyebrow {
+                margin-bottom: 10px;
+            }
+            .admin-header h1 {
+                font-size: clamp(28px, 4vw, 40px);
+                font-weight: 400;
+                margin-bottom: 8px;
+            }
+            .admin-header p {
+                color: var(--muted);
+                font-size: 15px;
+                max-width: 520px;
+            }
+
+            /* ── Card ── */
+            .admin-card {
+                background: var(--bg);
+                border: 1px solid var(--line);
+                border-radius: var(--r-lg);
+                padding: 40px 44px;
+                box-shadow: var(--shadow);
+            }
+            .admin-card h2 {
+                text-align: left;
+                font-size: 18px;
+                font-weight: 600;
+                color: var(--navy);
+                margin-bottom: 28px;
+                padding-bottom: 20px;
+                border-bottom: 1px solid var(--line);
+                letter-spacing: -0.01em;
+            }
+
+            /* ── Section dividers within the form ── */
+            .form-section {
+                margin-bottom: 32px;
+            }
+            .form-section-label {
+                font-size: 11px;
+                font-weight: 700;
+                letter-spacing: 0.16em;
+                text-transform: uppercase;
+                color: var(--blue);
+                margin-bottom: 16px;
+                padding-bottom: 8px;
+                border-bottom: 1px solid var(--blue-100);
+            }
+
+            /* ── Hint text below inputs ── */
+            .form-hint {
+                font-size: 12px;
+                color: var(--muted);
+                margin-top: 5px;
+            }
+
+            /* ── Character counter style tag ── */
+            .field-tag {
+                display: inline-block;
+                font-size: 10px;
+                font-weight: 700;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                color: var(--muted);
+                background: var(--blue-50);
+                border: 1px solid var(--blue-100);
+                border-radius: 4px;
+                padding: 2px 6px;
+                margin-left: 8px;
+                vertical-align: middle;
+            }
+
+            /* ── Submit row ── */
+            .admin-actions {
+                display: flex;
+                align-items: center;
+                gap: 16px;
+                margin-top: 36px;
+                padding-top: 28px;
+                border-top: 1px solid var(--line);
+            }
+            .btn-publish {
+                padding: 14px 32px;
+                font-size: 15px;
+            }
+            .btn-cancel {
+                font-size: 14px;
+                color: var(--muted);
+                text-decoration: none;
+                transition: color 0.2s;
+            }
+            .btn-cancel:hover {
+                color: var(--ink);
+            }
+
+            /* ── Success banner ── */
+            .flash-success {
+                background: #f0fdf4;
+                color: #166534;
+                border: 1px solid #bbf7d0;
+                border-radius: var(--r-sm);
+                padding: 12px 16px;
+                font-size: 14px;
+                margin-bottom: 24px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+            .flash-success::before {
+                content: "✓";
+                font-weight: 700;
+            }
+
+            /* ── Top admin bar ── */
+            .admin-topbar {
+                background: var(--navy);
+                color: rgba(255, 255, 255, 0.7);
+                padding: 10px 0;
+                font-size: 12px;
+                font-weight: 600;
+                letter-spacing: 0.06em;
+                text-transform: uppercase;
+            }
+            .admin-topbar .container {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 16px;
+            }
+            .admin-topbar span {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+            .admin-topbar .dot-live {
+                width: 7px;
+                height: 7px;
+                border-radius: 50%;
+                background: #4ade80;
+                display: inline-block;
+                animation: pulse-dot 2s infinite;
+            }
+            @keyframes pulse-dot {
+                0%,
+                100% {
+                    opacity: 1;
+                }
+                50% {
+                    opacity: 0.4;
+                }
+            }
+            .admin-topbar a {
+                color: rgba(255, 255, 255, 0.5);
+                font-weight: 500;
+                transition: color 0.2s;
+            }
+            .admin-topbar a:hover {
+                color: #fff;
+            }
+
+            @media (max-width: 640px) {
+                .admin-card {
+                    padding: 28px 20px;
+                }
+                .admin-inner {
+                    padding: 32px 16px 60px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Admin Status Bar -->
+        <div class="admin-topbar">
+            <div class="container">
+                <span>
+                    <span class="dot-live"></span>
+                    PEB Union — Editorial Admin
+                </span>
+                <span>
+                    <a href="/news">View News →</a>
+                    &nbsp;·&nbsp;
+                    <a href="/logout">Log Out</a>
+                </span>
+            </div>
+        </div>
+
+        <!-- Main Navbar -->
+        <header class="navbar" id="navbar">
+            <div class="nav-inner">
+                <a href="/" class="brand" aria-label="PEB Union home">
+                    <div class="brand-mark" aria-hidden="true">
+                        <svg
+                            viewBox="0 0 40 40"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <circle
+                                cx="20"
+                                cy="20"
+                                r="19"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="1.5"
+                            />
+                            <text
+                                x="20"
+                                y="26"
+                                text-anchor="middle"
+                                font-family="Fraunces, serif"
+                                font-weight="700"
+                                font-size="16"
+                                fill="currentColor"
+                            >
+                                P
+                            </text>
+                        </svg>
+                    </div>
+                    <div class="brand-text">
+                        <span class="brand-name">PEB Union</span>
+                        <span class="brand-tag"
+                            >Politics · Economics · Business</span
+                        >
+                    </div>
+                </a>
+
+                <button
+                    class="nav-toggle"
+                    id="navToggle"
+                    aria-label="Open menu"
+                    aria-expanded="false"
+                >
+                    <span></span><span></span><span></span>
+                </button>
+
+                <nav class="nav-links" id="navLinks">
+                    <a href="/" data-route="home">Home</a>
+                    <div class="nav-dropdown">
+                        <a href="/about" data-route="about"
+                            >About <span class="caret">▾</span></a
+                        >
+                        <div class="dropdown-menu">
+                            <a href="/about">Our Club</a>
+                            <a href="/staff">Our Staff</a>
+                            <a href="/charter">PEB Charter</a>
+                        </div>
+                    </div>
+                    <div class="nav-dropdown">
+                        <a href="/news" data-route="news"
+                            >News <span class="caret">▾</span></a
+                        >
+                        <div class="dropdown-menu">
+                            <a href="/news?cat=politics">Politics</a>
+                            <a href="/news?cat=economics">Economics</a>
+                            <a href="/news?cat=business">Business</a>
+                        </div>
+                    </div>
+                    <div class="nav-dropdown">
+                        <a href="/activities" data-route="activities"
+                            >Activities <span class="caret">▾</span></a
+                        >
+                        <div class="dropdown-menu">
+                            <a href="/mun">MUN</a>
+                            <a href="/peer-support">Peer Support</a>
+                        </div>
+                    </div>
+                    <a href="/interviews" data-route="interviews">Interviews</a>
+                    <div class="nav-dropdown">
+                        <a href="/articles" data-route="articles"
+                            >Articles <span class="caret">▾</span></a
+                        >
+                        <div class="dropdown-menu">
+                            <a href="/articles#politics">Politics</a>
+                            <a href="/articles#economics">Economics</a>
+                            <a href="/articles#business">Business</a>
+                        </div>
+                    </div>
+                    <a href="/contact" data-route="contact" class="nav-cta"
+                        >Contact</a
+                    >
+                </nav>
+            </div>
+        </header>
+
+        <!-- Admin Panel Body -->
+        <main class="admin-page" id="main" tabindex="-1">
+            <div class="admin-inner">
+                <div class="admin-header">
+                    <span class="eyebrow">Newsroom</span>
+                    <h1>Publish a new article</h1>
+                    <p>
+                        Fill out the fields below. The article will appear live
+                        on the News page immediately after submission.
+                    </p>
+                </div>
+
+                <!-- Flash Messages -->
+                {% for message in get_flashed_messages() %}
+                <div class="flash-success" role="status">{{ message }}</div>
+                {% endfor %}
+
+                <div class="admin-card">
+                    <h2>Article Details</h2>
+
+                    <form method="POST" action="/admin/add" novalidate>
+                        <!-- ── Core Info ── -->
+                        <div class="form-section">
+                            <div class="form-section-label">Core Info</div>
+
+                            <div class="form-row">
+                                <label for="title">Headline</label>
+                                <input
+                                    type="text"
+                                    id="title"
+                                    name="title"
+                                    placeholder="e.g. Central Bank Raises Interest Rates for Third Time This Year"
+                                    required
+                                />
+                            </div>
+
+                            <div class="form-row">
+                                <label for="category">
+                                    Desk
+                                    <span class="field-tag">Required</span>
+                                </label>
+                                <select id="category" name="category" required>
+                                    <option value="" disabled selected>
+                                        Select a category…
+                                    </option>
+                                    <option value="politics">Politics</option>
+                                    <option value="economics">Economics</option>
+                                    <option value="business">Business</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- ── Content ── -->
+                        <div class="form-section">
+                            <div class="form-section-label">Content</div>
+
+                            <div class="form-row">
+                                <label for="summary">
+                                    Summary
+                                    <span class="field-tag">Card Preview</span>
+                                </label>
+                                <textarea
+                                    id="summary"
+                                    name="summary"
+                                    rows="3"
+                                    placeholder="A 1–2 sentence preview shown on the news card. Keep it sharp and factual."
+                                    required
+                                ></textarea>
+                                <p class="form-hint">
+                                    Appears beneath the headline on the news
+                                    grid card.
+                                </p>
+                            </div>
+
+                            <div class="form-row">
+                                <label for="content">
+                                    Full Article
+                                    <span class="field-tag">Modal Body</span>
+                                </label>
+                                <textarea
+                                    id="content"
+                                    name="content"
+                                    rows="10"
+                                    placeholder="Write the full article here. Separate paragraphs with a blank line. The reader will see this in the expanded modal view."
+                                    required
+                                    style="min-height: 220px"
+                                ></textarea>
+                                <p class="form-hint">
+                                    Displayed in the article modal when a reader
+                                    clicks "Read story".
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- ── Media ── -->
+                        <div class="form-section">
+                            <div class="form-section-label">
+                                Media
+                                <span
+                                    style="
+                                        font-weight: 400;
+                                        text-transform: none;
+                                        letter-spacing: 0;
+                                        color: var(--muted);
+                                        font-size: 11px;
+                                    "
+                                    >(both optional)</span
+                                >
+                            </div>
+
+                            <div class="form-row">
+                                <label for="image_url">Cover Image URL</label>
+                                <input
+                                    type="url"
+                                    id="image_url"
+                                    name="image_url"
+                                    placeholder="https://example.com/image.jpg"
+                                />
+                                <p class="form-hint">
+                                    Displayed as the card cover and modal header
+                                    image. Use a direct image link (JPG, PNG,
+                                    WebP).
+                                </p>
+                            </div>
+
+                            <div class="form-row">
+                                <label for="video_url">YouTube Embed URL</label>
+                                <input
+                                    type="url"
+                                    id="video_url"
+                                    name="video_url"
+                                    placeholder="https://www.youtube.com/embed/VIDEO_ID"
+                                />
+                                <p class="form-hint">
+                                    Use the <strong>embed</strong> URL format:
+                                    <code
+                                        style="
+                                            background: var(--blue-50);
+                                            padding: 1px 5px;
+                                            border-radius: 3px;
+                                            font-size: 11px;
+                                        "
+                                        >youtube.com/embed/VIDEO_ID</code
+                                    >. A ▶ Video badge will appear on the card.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- ── Actions ── -->
+                        <div class="admin-actions">
+                            <button type="submit" class="btn btn-publish">
+                                Publish Article →
+                            </button>
+                            <a href="/news" class="btn-cancel">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <div class="footer-inner">
+                <div class="footer-col footer-brand">
+                    <div
+                        class="brand-mark"
+                        aria-hidden="true"
+                        style="margin-bottom: 16px"
+                    >
+                        <img
+                            src="/static/img/logo-white.png"
+                            alt="PEB Union"
+                            style="height: 38px; width: auto; opacity: 0.95"
+                        />
+                    </div>
+                    <p class="footer-text">
+                        A student-led union of Al-Beruni International Boarding
+                        School, dedicated to educating and empowering the next
+                        generation of informed leaders in Politics, Economics
+                        and Business.
+                    </p>
+                </div>
+                <div class="footer-col">
+                    <h4>Explore</h4>
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/about">About Us</a></li>
+                        <li><a href="/charter">PEB Charter</a></li>
+                        <li><a href="/news">News</a></li>
+                        <li><a href="/articles">Articles</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Activities</h4>
+                    <ul>
+                        <li><a href="/mun">Model UN</a></li>
+                        <li><a href="/peer-support">Peer Support</a></li>
+                        <li>
+                            <a href="/interviews">Interviews &amp; Podcasts</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Connect</h4>
+                    <ul>
+                        <li><a href="/contact">Contact Us</a></li>
+                        <li>
+                            <a href="mailto:pebunion@gmail.com"
+                                >pebunion@gmail.com</a
+                            >
+                        </li>
+                        <li>
+                            <a
+                                href="https://instagram.com/peb_union"
+                                target="_blank"
+                                rel="noopener"
+                                >Instagram</a
+                            >
+                        </li>
+                        <li>
+                            <a
+                                href="https://t.me/peb_union"
+                                target="_blank"
+                                rel="noopener"
+                                >Telegram</a
+                            >
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span
+                    >© <span id="year"></span> PEB Union. All rights
+                    reserved.</span
+                >
+                <span class="footer-meta"
+                    >Built with care · Flask · SQLite · JavaScript</span
+                >
+            </div>
+        </footer>
+
+        <script src="{{ url_for('static', filename='js/layout.js') }}"></script>
+    </body>
+</html>

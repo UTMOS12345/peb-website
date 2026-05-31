@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Add Staff — PEB Union</title>
+        <!-- Add your existing CSS link here if needed -->
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static', filename='css/styles.css') }}"
+        />
+        <style>
+            /* Minimal styling to keep it usable without base.html */
+            body {
+                font-family: sans-serif;
+                background: #f4f4f4;
+                padding: 20px;
+            }
+            .container {
+                max-width: 600px;
+                margin: 0 auto;
+                background: white;
+                padding: 30px;
+                border-radius: 8px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            }
+            .form-row {
+                margin-bottom: 15px;
+            }
+            label {
+                display: block;
+                margin-bottom: 5px;
+                font-weight: bold;
+            }
+            input,
+            select {
+                width: 100%;
+                padding: 8px;
+                box-sizing: border-box;
+            }
+            .btn {
+                background: #007bff;
+                color: white;
+                padding: 10px 15px;
+                border: none;
+                cursor: pointer;
+                border-radius: 4px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <a href="{{ url_for('manage_news') }}">← Back to Dashboard</a>
+            <h2>Add PEB Union Member</h2>
+
+            <form method="POST">
+                <div class="form-row">
+                    <label>Full Name</label>
+                    <input
+                        type="text"
+                        name="name"
+                        placeholder="Student Name"
+                        required
+                    />
+                </div>
+                <div class="form-row">
+                    <label>Role</label>
+                    <input
+                        type="text"
+                        name="role"
+                        placeholder="e.g. Head of Research"
+                        required
+                    />
+                </div>
+                <div class="form-row">
+                    <label>Department</label>
+                    <select name="department">
+                        <option value="Executive">Executive Council</option>
+                        <option value="Politics">Politics Desk</option>
+                        <option value="Economics">Economics Desk</option>
+                        <option value="Business">Business Desk</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <label>Photo URL</label>
+                    <input
+                        type="url"
+                        name="image_url"
+                        placeholder="Link to photo..."
+                    />
+                </div>
+                <button type="submit" class="btn">Add Member</button>
+            </form>
+        </div>
+    </body>
+</html>

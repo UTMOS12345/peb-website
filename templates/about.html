@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>About — PEB Union</title>
+        <meta
+            name="description"
+            content="About PEB Union — our mission, vision, and core values."
+        />
+
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Manrope:wght@300;400;500;600;700;800&display=swap"
+            rel="stylesheet"
+        />
+
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static', filename='css/styles.css') }}"
+        />
+    </head>
+    <body>
+        <header class="navbar" id="navbar">
+            <div class="nav-inner">
+                <a href="/" class="brand" aria-label="PEB Union home">
+                    <img
+                        src="/static/img/logo.png"
+                        alt="PEB Union"
+                        style="height: 38px; width: auto"
+                    />
+                </a>
+
+                <button
+                    class="nav-toggle"
+                    id="navToggle"
+                    aria-label="Open menu"
+                    aria-expanded="false"
+                >
+                    <span></span><span></span><span></span>
+                </button>
+
+                <nav class="nav-links" id="navLinks">
+                    <a href="/" data-route="home">Home</a>
+
+                    <div class="nav-dropdown">
+                        <a href="about" data-route="about"
+                            >About <span class="caret">▾</span></a
+                        >
+                        <div class="dropdown-menu">
+                            <a href="about">Our Club</a>
+                            <a href="staff">Our Staff</a>
+                            <a href="charter">PEB Charter</a>
+                        </div>
+                    </div>
+
+                    <a href="/news" data-route="news">News</a>
+
+                    <div class="nav-dropdown">
+                        <a href="activities" data-route="activities"
+                            >Activities <span class="caret">▾</span></a
+                        >
+                        <div class="dropdown-menu">
+                            <a href="mun">MUN</a>
+                            <a href="peer-support">Peer Support</a>
+                        </div>
+                    </div>
+
+                    <a href="interviews" data-route="interviews">Interviews</a>
+                    <div class="nav-dropdown">
+                        <a href="/articles" data-route="articles"
+                            >Articles <span class="caret">▾</span></a
+                        >
+                        <div class="dropdown-menu">
+                            <a href="/articles#politics">Politics</a>
+                            <a href="/articles#economics">Economics</a>
+                            <a href="/articles#business">Business</a>
+                        </div>
+                    </div>
+                    <a href="contact" data-route="contact" class="nav-cta"
+                        >Contact</a
+                    >
+                </nav>
+            </div>
+        </header>
+
+        <main id="main" class="main" tabindex="-1">
+            <section class="section">
+                <div class="container">
+                    <span class="eyebrow">About PEB</span>
+                    <h1
+                        style="
+                            font-size: clamp(36px, 5vw, 64px);
+                            font-weight: 400;
+                            max-width: 720px;
+                        "
+                    >
+                        A union for students who take the world seriously.
+                    </h1>
+                </div>
+            </section>
+
+            <div class="container">
+                <div class="about-tabs">
+                    <a href="about" class="about-tab active">Our Club</a>
+                    <a href="staff" class="about-tab">Our Staff</a>
+                    <a href="charter" class="about-tab">PEB Charter</a>
+                </div>
+            </div>
+
+            <section style="padding: 0 0 96px">
+                <div class="container">
+                    <div class="about-grid">
+                        <div>
+                            <span class="eyebrow">Our club</span>
+                            <h2
+                                style="
+                                    font-size: clamp(28px, 3.5vw, 42px);
+                                    font-weight: 400;
+                                    margin-bottom: 20px;
+                                "
+                            >
+                                A student-led union of curious, collaborative,
+                                globally-minded learners.
+                            </h2>
+                            <p
+                                style="
+                                    font-size: 17px;
+                                    line-height: 1.75;
+                                    color: #1e293b;
+                                "
+                            >
+                                PEB Union is the Politics, Economics and
+                                Business union of Al-Beruni International
+                                Boarding School. We are a student-led,
+                                non-profit organisation governed by our Charter
+                                and operated under the school's guidelines.
+                            </p>
+
+                            <h3
+                                style="
+                                    font-family: var(--serif);
+                                    font-size: 22px;
+                                    font-weight: 500;
+                                    margin: 28px 0 8px;
+                                    color: var(--navy);
+                                "
+                            >
+                                Mission
+                            </h3>
+                            <p
+                                style="
+                                    font-size: 16px;
+                                    line-height: 1.75;
+                                    color: #1e293b;
+                                "
+                            >
+                                Educate and empower students in politics,
+                                economics, and business through peer-supported
+                                learning. Organise educational activities, MUN
+                                simulations, and maintain a digital platform for
+                                podcasts and articles to encourage research and
+                                dialogue.
+                            </p>
+
+                            <h3
+                                style="
+                                    font-family: var(--serif);
+                                    font-size: 22px;
+                                    font-weight: 500;
+                                    margin: 24px 0 8px;
+                                    color: var(--navy);
+                                "
+                            >
+                                Vision
+                            </h3>
+                            <p
+                                style="
+                                    font-size: 16px;
+                                    line-height: 1.75;
+                                    color: #1e293b;
+                                "
+                            >
+                                Build a well-informed, confident, and socially
+                                responsible generation of young leaders who
+                                actively engage with political, economic, and
+                                business issues on a global scale.
+                            </p>
+
+                            <a
+                                href="charter"
+                                class="btn btn--ghost"
+                                style="margin-top: 20px"
+                                >Read the PEB Charter</a
+                            >
+                        </div>
+                        <div>
+                            <div class="hero-art" style="aspect-ratio: 4/5">
+                                <div class="hero-art-text">
+                                    <div class="top">Founded</div>
+                                    <div class="big">
+                                        "Politics.<br />Economics.<br />Business."
+                                    </div>
+                                    <div class="meta">
+                                        <span>PEB Union</span
+                                        ><span>Al-Beruni IBS</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 64px">
+                        <span class="eyebrow"
+                            >Our Core Values · Article II §2.3</span
+                        >
+                        <h2
+                            style="
+                                font-size: clamp(26px, 3vw, 36px);
+                                font-weight: 400;
+                                margin-bottom: 28px;
+                            "
+                        >
+                            The five values that guide our work.
+                        </h2>
+                    </div>
+                    <div class="values">
+                        <div class="value">
+                            <div class="value-num">i.</div>
+                            <h4>Critical Thinking</h4>
+                            <p>
+                                Ask questions, think deeply, and use evidence to
+                                support ideas.
+                            </p>
+                        </div>
+                        <div class="value">
+                            <div class="value-num">ii.</div>
+                            <h4>Collaboration</h4>
+                            <p>
+                                Work together, listen, and respect different
+                                opinions.
+                            </p>
+                        </div>
+                        <div class="value">
+                            <div class="value-num">iii.</div>
+                            <h4>Inclusivity</h4>
+                            <p>Everyone is welcome and every voice matters.</p>
+                        </div>
+                        <div class="value">
+                            <div class="value-num">iv.</div>
+                            <h4>Leadership</h4>
+                            <p>
+                                Take responsibility, show initiative, and act
+                                with integrity.
+                            </p>
+                        </div>
+                        <div class="value">
+                            <div class="value-num">v.</div>
+                            <h4>Global Awareness</h4>
+                            <p>
+                                Stay informed about world issues and understand
+                                diverse cultures and perspectives.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <div class="footer-inner">
+                <div class="footer-col footer-brand">
+                    <div
+                        class="brand-mark"
+                        aria-hidden="true"
+                        style="margin-bottom: 16px"
+                    >
+                        <img
+                            src="/static/img/logo-white.png"
+                            alt="PEB Union"
+                            style="height: 38px; width: auto; opacity: 0.95"
+                        />
+                    </div>
+                    <p class="footer-text">
+                        A student-led union of Al-Beruni International Boarding
+                        School, dedicated to educating and empowering the next
+                        generation of informed leaders in Politics, Economics
+                        and Business.
+                    </p>
+                </div>
+                <div class="footer-col">
+                    <h4>Explore</h4>
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/about">About Us</a></li>
+                        <li><a href="/charter">PEB Charter</a></li>
+                        <li><a href="/news">News</a></li>
+                        <li><a href="/articles">Articles</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Activities</h4>
+                    <ul>
+                        <li><a href="/mun">Model UN</a></li>
+                        <li><a href="/peer-support">Peer Support</a></li>
+                        <li>
+                            <a href="/interviews">Interviews &amp; Podcasts</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Connect</h4>
+                    <ul>
+                        <li><a href="/contact">Contact Us</a></li>
+                        <li>
+                            <a href="mailto:pebunion@gmail.com"
+                                >pebunion@gmail.com</a
+                            >
+                        </li>
+                        <li>
+                            <a
+                                href="https://instagram.com/peb_union"
+                                target="_blank"
+                                rel="noopener"
+                                >Instagram</a
+                            >
+                        </li>
+                        <li>
+                            <a
+                                href="https://t.me/peb_union"
+                                target="_blank"
+                                rel="noopener"
+                                >Telegram</a
+                            >
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span
+                    >© <span id="year"></span> PEB Union. All rights
+                    reserved.</span
+                >
+                <span class="footer-meta"
+                    >Built with care · Flask · SQLite · JavaScript</span
+                >
+            </div>
+        </footer>
+
+        <script src="{{ url_for('static', filename='js/layout.js') }}"></script>
+    </body>
+</html>

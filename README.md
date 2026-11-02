@@ -78,6 +78,17 @@ Open http://127.0.0.1:5000. The admin panel is at `/login`, then `/admin/manage`
 | `static/css/styles.css` | Site styles |
 | `static/img/` | Logos and background image |
 
+## Roadmap
+
+- [ ] Move `SECRET_KEY` out of `app.py` into an environment variable
+- [ ] Remove `static/css/styles.css.bak` from the repo
+- [ ] Image uploads in the editor instead of pasting image URLs
+- [ ] Search and category filters on the news and articles pages
+- [ ] An events calendar for MUN and other activities
+- [ ] Send the contact form to the club's email or Telegram
+- [ ] Uzbek and Russian versions of the site
+- [ ] Deploy with a production server (gunicorn) and a real domain
+
 ## Maintainers
 
 [@UTMOS12345](https://github.com/UTMOS12345)
